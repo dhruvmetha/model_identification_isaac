@@ -3,3 +3,6 @@ IsaacGymEnvs/
 lance/
 rsl_rl/
 unitree_ros/
+__pycache__/
+ground_truth/
+plane_default/
