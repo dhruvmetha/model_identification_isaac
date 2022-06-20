@@ -6,3 +6,5 @@ unitree_ros/
 __pycache__/
 ground_truth/
 plane_default/
+*.pyc
+**/__pycache__

@@ -176,6 +176,7 @@ def get_args():
     args.sim_device = args.sim_device_type
     if args.sim_device=='cuda':
         args.sim_device += f":{args.sim_device_id}"
+
     return args
 
 def export_policy_as_jit(actor_critic, path):

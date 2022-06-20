@@ -102,7 +102,7 @@ class IsaacGymCollector:
         
         
 if __name__ == '__main__':
-    args = get_args()   
+    args = get_args()  
     i_dc = IsaacGymCollector(args, 'plane_default')
-    i_dc.train_model()
-    # i_dc.collect_data('ground_truth/gt.pkl', num_steps=1000)
+    # i_dc.train_model()
+    i_dc.collect_data('ground_truth/gt.pkl', num_steps=1000)

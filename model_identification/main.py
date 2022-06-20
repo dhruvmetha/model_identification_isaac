@@ -100,6 +100,7 @@ def main(args):
             if False:
                 print(obs[i].shape)
                 print((obs[i] - gt_obs[i]))
+            print(gt_obs[i].device, obs[i].device)
             error_tracker += error_function(obs[i], gt_obs[i])
         # errors = error_function(obs, gt_obs)
         for k, v in zip(qps, error_tracker):
