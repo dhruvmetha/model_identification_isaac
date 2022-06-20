@@ -7,4 +7,9 @@ __pycache__/
 ground_truth/
 plane_default/
 *.pyc
-**/__pycache__
+**/__pycache__/
+**/*.pyc
+legged_gym/legged_gym/__pycache__/
+legged_gym/legged_gym/envs/__pycache__/
+legged_gym/legged_gym/envs/base/__pycache__/
+legged_gym/legged_gym/envs/a1/__pycache__/

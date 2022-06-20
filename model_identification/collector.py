@@ -16,7 +16,7 @@ class A1RoughCfgCollection(A1RoughCfg):
 class LeggedRobotForCollection(LeggedRobot):
     def __init__(self, cfg, sim_params, physics_engine, sim_device, headless):
         self.cfg = cfg
-        # self.query_points = self.cfg.env.query_points # num_envs x 13 x 1
+        self.query_model = self.cfg.env.query_model # num_envs x 13 x 1
         # self.cfg.env.num_envs = 1
         super().__init__(self.cfg, sim_params, physics_engine, sim_device, headless)
     
@@ -48,9 +48,9 @@ class LeggedRobotForCollection(LeggedRobot):
 
         for s in range(len(props)):
             if s in self.cfg.env.shapes.keys():
-                props[s].friction = self.query_points[env_id][self.cfg.env.friction_joints[s]]
+                props[s].friction = self.query_points[env_id][self.cfg.env.shapes[s]]
             else:
-                props[s].friction = 1.0 #self.friction_coeffs[env_id]
+                props[s].friction = self.friction_coeffs[env_id]
         return props
     
     
@@ -62,7 +62,12 @@ class LeggedRobotForCollection(LeggedRobot):
         #         print(f"Mass of body {i}: {p.mass} (before randomization)")
         #     print(f"Total mass {sum} (before randomization)")
         # randomize base mass
-        props[0].mass += self.query_points[env_id][-1]
+        for s in range(len(props)):
+            if s in self.cfg.env.bodies.keys():
+                props[s].mass += self.query_model[env_id][self.cfg.env.bodies[s]]
+            # else:
+            #     props[s].mass = self.mass_coeffs[env_id]
+        # props[0].mass += self.query_model[env_id][-1]
         return props
 
 task_registry.register('a1_collect', LeggedRobotForCollection, A1RoughCfgCollection(), A1RoughCfgPPO())
