@@ -5,9 +5,9 @@ class RunConfig(BaseConfig):
     train_base: bool = False
     collect_base: bool = True
     search_model: bool = True
-    train_best_model: bool = False
-    collect_best_model: bool = False
-    record_error: bool = False
+    train_best_model: bool = True
+    collect_best_model: bool = True
+    record_error: bool = True
     
     trained_model: str = "plane_default_test" # location of trained model to be used
     results_folder = "results"
@@ -90,12 +90,12 @@ class CollectConfig(BaseConfig):
     
     class additional_params:
         class env:
-            shapes = list(range(1))# [0] 
-            bodies = list(range(3)) # [0, 1]
+            shapes = list(range(13))# [0] 
+            bodies = [0, *list(range(10, 17))] # [0, 1]
             class query_model:
                 ## ground truth definition
-                shapes = [1.4,] * 1 # friction values -> same as len(env.shapes)
-                bodies = [-0.02] * 3  # mass values -> same as len(env.bodies)
+                shapes = [1.4,] * 13 # friction values -> same as len(env.shapes)
+                bodies = [0.4, *([0.02] * 5), *([-0.1] * 2)]  # mass values -> same as len(env.bodies)
                 
 
 

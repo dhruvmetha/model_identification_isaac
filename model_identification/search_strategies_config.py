@@ -50,20 +50,17 @@ class cross_entropy(BaseConfig):
     rollout_size = 100
     name = "cross_entropy"
     batch_size = 4096
-    num_iterations = 10
+    num_iterations = 50
 
-    start_mean = np.random.rand(4) # same size as all shapes + all bodies that need to be adjusted
-    start_var = np.diag([0.5] * 4) # same size as all shapes + all bodies that need to be adjusted
-    elite_frac = 0.1
+    start_mean = 2 * np.random.rand(21) - 1 # same size as all shapes + all bodies that need to be adjusted
+    start_var = np.diag([1] * 21) # same size as all shapes + all bodies that need to be adjusted
+    elite_frac = 0.01
     
     # ranges = dict(
     #     friction = [dict(start=0., end=10., step=64)],
     #     mass = [dict(start=-3., end=3., step=64)])
     
-    interval_zoom = 0.75
-    adaptive_step = 20
-    
     class additional_params:
         class env:
-            shapes = list(range(1)) # [0]  # list(range(13)) -> number of colliding shapes
-            bodies = list(range(3)) # [0] # list(range(17)) -> number of rigid bodies with mass 
+            shapes = list(range(13)) # [0]  # list(range(13)) -> number of colliding shapes
+            bodies = [0, *list(range(10, 17))] # [0] # list(range(17)) -> number of rigid bodies with mass 
