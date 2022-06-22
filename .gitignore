@@ -12,9 +12,4 @@ best_model/
 observations/
 **/__pycache__/
 *.pyc
-exhaustive/
-exhaustive_1dim/
-cross_entropy/
-adaptive/
-observation/
-
+results/

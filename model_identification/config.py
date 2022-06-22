@@ -10,7 +10,8 @@ class RunConfig(BaseConfig):
     record_error: bool = False
     
     trained_model: str = "plane_default_test" # location of trained model to be used
-    root_save_folder: str = "exhaustive_1dim"
+    results_folder = "results"
+    root_save_folder: str = f"{results_folder}/test"
     ground_truth_path: str = f"{root_save_folder}/ground_truth/gt.pkl"
     best_model_path: str = f"{root_save_folder}/best_model/model.pkl"
     iteration_error = f'{root_save_folder}/errors/iteration.pkl'
@@ -59,7 +60,7 @@ class SearchConfig(BaseConfig):
         added_mass_range = [-0.5, -0.5]
     
     class strategy:
-        name = "exhaustive"
+        name = "cross_entropy"
         
 
 class CollectConfig(BaseConfig):
@@ -89,12 +90,12 @@ class CollectConfig(BaseConfig):
     
     class additional_params:
         class env:
-            shapes = [0]
-            bodies = [0]
+            shapes = list(range(1))# [0] 
+            bodies = list(range(3)) # [0, 1]
             class query_model:
                 ## ground truth definition
-                shapes = [1.4,] # friction values -> same as len(env.shapes)
-                bodies = [-0.4,] # mass values -> same as len(env.bodies)
+                shapes = [1.4,] * 1 # friction values -> same as len(env.shapes)
+                bodies = [-0.02] * 3  # mass values -> same as len(env.bodies)
                 
 
 

@@ -24,7 +24,7 @@ class exhaustive(BaseConfig):
     
     class additional_params:
         class env:
-            shapes = [0]  # list(range(13)) -> number of colliding shapes
+            shapes = [0, 1, 4, 7, 10]  # list(range(13)) -> number of colliding shapes
             bodies = [0] # list(range(17)) -> number of rigid bodies with mass    
             
 class adaptive(BaseConfig):
@@ -35,7 +35,7 @@ class adaptive(BaseConfig):
     
     ranges = dict(
         friction = [dict(start=0., end=2., step=5)],
-        mass = [dict(start=-1., end=1., step=5)])
+        mass = [dict(start=-1., end=1., step=5)] * 2)
     
     interval_zoom = 0.75
     adaptive_step = 5
@@ -43,7 +43,7 @@ class adaptive(BaseConfig):
     class additional_params:
         class env:
             shapes = [0]  # list(range(13)) -> number of colliding shapes
-            bodies = [0] # list(range(17)) -> number of rigid bodies with mass 
+            bodies = [0, 1] # list(range(17)) -> number of rigid bodies with mass 
             
             
 class cross_entropy(BaseConfig):
@@ -52,8 +52,8 @@ class cross_entropy(BaseConfig):
     batch_size = 4096
     num_iterations = 10
 
-    start_mean = np.random.rand(6) # same size as all shapes + all bodies that need to be adjusted
-    start_var = np.diag([1.] * 6) # same size as all shapes + all bodies that need to be adjusted
+    start_mean = np.random.rand(4) # same size as all shapes + all bodies that need to be adjusted
+    start_var = np.diag([0.5] * 4) # same size as all shapes + all bodies that need to be adjusted
     elite_frac = 0.1
     
     # ranges = dict(
@@ -65,5 +65,5 @@ class cross_entropy(BaseConfig):
     
     class additional_params:
         class env:
-            shapes = [0]  # list(range(13)) -> number of colliding shapes
-            bodies = [0] # list(range(17)) -> number of rigid bodies with mass 
+            shapes = list(range(1)) # [0]  # list(range(13)) -> number of colliding shapes
+            bodies = list(range(3)) # [0] # list(range(17)) -> number of rigid bodies with mass 

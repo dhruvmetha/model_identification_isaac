@@ -10,8 +10,6 @@ class SearchStrategy:
         
     def get_query_points(self, *args):
         raise NotImplementedError
-    
-
 
 class BatchRandomSearch(SearchStrategy):
     def __init__(self, strategy_args):
@@ -141,44 +139,10 @@ class CrossEntropySearch(SearchStrategy):
         elite = qps[np.argpartition(errors.cpu().numpy(), elite_count)][:elite_count]
         mean = elite.mean(axis=0)
         cov = np.cov(elite.T)
-        print(elite.shape, mean.shape, cov.shape)
+        # print(elite.shape, mean.shape, cov.shape)
         self.completed += 1
         
         return np.random.multivariate_normal(mean, cov, self.batch_size), self.completed == self.num_iterations
-        
-        
-# class AdaptiveSearch:
-#     pass
-
-# ranges = {
-#             'friction': {
-#                 'start': 0,
-#                 'end': 10,
-#                 'step': 64, 
-#                 'repeat': 5
-#             },
-            
-#             'mass': {
-#                 'start': 0,
-#                 'end': 1,
-#                 'step': 10, 
-#                 'repeat': 1
-#             }
-#         }
-
-# qps = []
-# es = BatchRandomSearch(ranges, iterations=10, batch_size=2)
-# k = 0
-# while True:
-#     qp, done = es.get_query_points()
-#     # print(qp)
-#     qps.extend(qp)
-#     # print(k+1)
-#     if done:
-#         break
-#     k = k+1
-    
-# print(len(qps))
     
     
 
