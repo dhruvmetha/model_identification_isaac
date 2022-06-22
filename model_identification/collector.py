@@ -8,15 +8,17 @@ from legged_gym.envs import LeggedRobot
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 from utils import torch_random_tensor
 
-
 class A1RoughCfgCollection(A1RoughCfg):
     class init_state( A1RoughCfg.init_state ):
         add_noise = False
-
+        
 class LeggedRobotForCollection(LeggedRobot):
     def __init__(self, cfg, sim_params, physics_engine, sim_device, headless):
         self.cfg = cfg
-        self.query_model = self.cfg.env.query_model # num_envs x 13 x 1
+        self.query_model = getattr(self.cfg.env, "query_model", None)
+        # self.partition_point = None
+        # if self.query_model is not None:
+        #     self.partition_point = len(self.cfg.env.shapes)
         # self.cfg.env.num_envs = 1
         super().__init__(self.cfg, sim_params, physics_engine, sim_device, headless)
     
@@ -47,8 +49,8 @@ class LeggedRobotForCollection(LeggedRobot):
                 self.friction_coeffs = friction_buckets[bucket_ids]
 
         for s in range(len(props)):
-            if s in self.cfg.env.shapes.keys():
-                props[s].friction = self.query_points[env_id][self.cfg.env.shapes[s]]
+            if getattr(self.cfg.env, "shapes", None) is not None and s in self.cfg.env.shapes.keys():
+                props[s].friction = self.query_model.shapes[self.cfg.env.shapes[s]]
             else:
                 props[s].friction = self.friction_coeffs[env_id]
         return props
@@ -63,12 +65,17 @@ class LeggedRobotForCollection(LeggedRobot):
         #     print(f"Total mass {sum} (before randomization)")
         # randomize base mass
         for s in range(len(props)):
-            if s in self.cfg.env.bodies.keys():
-                props[s].mass += self.query_model[env_id][self.cfg.env.bodies[s]]
+            if getattr(self.cfg.env, "bodies", None) is not None and s in self.cfg.env.bodies.keys():
+                props[s].mass += self.query_model.bodies[self.cfg.env.bodies[s]]
+            else:
+                if self.cfg.domain_rand.randomize_base_mass and s == 0:
+                    rng = self.cfg.domain_rand.added_mass_range
+                    props[s].mass += np.random.uniform(rng[0], rng[1])
             # else:
             #     props[s].mass = self.mass_coeffs[env_id]
         # props[0].mass += self.query_model[env_id][-1]
         return props
+
 
 task_registry.register('a1_collect', LeggedRobotForCollection, A1RoughCfgCollection(), A1RoughCfgPPO())
 
