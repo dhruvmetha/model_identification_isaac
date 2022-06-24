@@ -68,6 +68,14 @@ class LeggedRobotForIdentification(LeggedRobot):
                 props[s].mass += self.query_points[env_id][self.cfg.env.bodies[s] + self.partition_point]
         # props[0].mass += self.query_points[env_id][-1]
         return props
+
+    # addtional reward functions
+    
+    def _reward_ang_vel_pitch(self):
+        # rewarding back flip while punishing sideways rotation
+        return - self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0]) - torch.abs(self.base_ang_vel[:, 2])
+        # rewarding front flip while punishing sideways rotation
+        return self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0])
    
 task_registry.register('a1_search', LeggedRobotForIdentification, A1RoughCfgIdentification(), A1RoughCfgPPO())
 

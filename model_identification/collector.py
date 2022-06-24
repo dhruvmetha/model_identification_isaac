@@ -75,7 +75,21 @@ class LeggedRobotForCollection(LeggedRobot):
             #     props[s].mass = self.mass_coeffs[env_id]
         # props[0].mass += self.query_model[env_id][-1]
         return props
-
+    
+    
+    # addtional reward functions
+    
+    def _reward_ang_vel_pitch(self):
+        # rewarding back flip while punishing sideways rotation
+        return - self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0]) - torch.abs(self.base_ang_vel[:, 2])
+        # rewarding front flip while punishing sideways rotation
+        return self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0])
+    
+    def _reward_lin_vel(self):
+        # penalizing any linear velocity
+        lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
+        return torch.exp(lin_vel_error/self.cfg.rewards.tracking_sigma)
+        
 
 task_registry.register('a1_collect', LeggedRobotForCollection, A1RoughCfgCollection(), A1RoughCfgPPO())
 

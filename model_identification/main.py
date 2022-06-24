@@ -60,7 +60,7 @@ def main(args):
             collector = IsaacGymCollector(run_config.trained_model, env_collect_config.rollout_size, args, env_cfg, train_cfg)
             # if trained base policy does not exist -> run trainer
             if run_config.train_base:
-                collector.reset_cfg(env_train_config)
+                collector.reset_cfg(env_train_config.task_config[env_train_config.base_task])
                 collector.train_model()
             # run collector and save ground truth
             collector.reset_cfg(env_collect_config)
@@ -133,37 +133,38 @@ def main(args):
         with open(run_config.best_model_path, 'wb') as f:
             pickle.dump(best_model, f)
 
-    best_model = None
-    with open(run_config.best_model_path, 'rb') as f:    
-        best_model = pickle.load(f)
     
-    shapes_, bodies_ = best_model['shapes'], best_model['bodies']
-    shapes_model, bodies_model, others = best_model['shapes_model'], best_model['bodies_model'], best_model['others']
-    print('best model', shapes_model, bodies_model)
-    
-    class additional_params_:
-        class env:
-            shapes = shapes_
-            bodies = bodies_
-            class query_model:
-                shapes = shapes_model
-                bodies = bodies_model
-    
-    class new_train_config(BaseConfig):
-        domain_rand = others
-        additional_params = additional_params_
-    
-    class new_collect_config(BaseConfig):
-        domain_rand = others
-        additional_params = additional_params_
     
     if run_config.collect_best_model:    
+        best_model = None
+        with open(run_config.best_model_path, 'rb') as f:    
+            best_model = pickle.load(f)
+        
+        shapes_, bodies_ = best_model['shapes'], best_model['bodies']
+        shapes_model, bodies_model, others = best_model['shapes_model'], best_model['bodies_model'], best_model['others']
+        print('best model', shapes_model, bodies_model)
+        
+        class additional_params_:
+            class env:
+                shapes = shapes_
+                bodies = bodies_
+                class query_model:
+                    shapes = shapes_model
+                    bodies = bodies_model
+        
+        class new_train_config(BaseConfig):
+            domain_rand = others
+            additional_params = additional_params_
+        
+        class new_collect_config(BaseConfig):
+            domain_rand = others
+            additional_params = additional_params_
         args.task = "a1_collect"
         env_cfg, train_cfg = task_registry.get_cfgs(name=args.task)
         collector = IsaacGymCollector(run_config.trained_best_model_path, env_collect_config.rollout_size, args, env_cfg, train_cfg)
         # train policy using simulator and the best model
         if run_config.train_best_model:
-            collector.reset_cfg(env_train_config)
+            collector.reset_cfg(env_train_config.task_config[env_train_config.test_task])
             collector.reset_cfg(new_train_config())
             collector.train_model()
         # run policy in simulation and collect data
