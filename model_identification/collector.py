@@ -81,14 +81,26 @@ class LeggedRobotForCollection(LeggedRobot):
     
     def _reward_ang_vel_pitch(self):
         # rewarding back flip while punishing sideways rotation
-        return - self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0]) - torch.abs(self.base_ang_vel[:, 2])
+        
+        return (- self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0]) - torch.abs(self.base_ang_vel[:, 2])) * (self.episode_length_buf < (0.6  * self.max_episode_length)) 
+        
         # rewarding front flip while punishing sideways rotation
         return self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0])
+    
+    def _reward_pre_termination(self):
+        return torch.sum(torch.square(self.base_ang_vel[:, :]), dim=1) * (self.episode_length_buf > (0.95  * self.max_episode_length)) 
     
     def _reward_lin_vel(self):
         # penalizing any linear velocity
         lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
         return torch.exp(lin_vel_error/self.cfg.rewards.tracking_sigma)
+    
+    
+    def _reward_termination(self):
+        # Terminal reward / penalty
+        r = torch.sum(torch.square(self.base_ang_vel[:, :]), dim=1) * self.time_out_buf + torch.sum(torch.abs(self.dof_pos - self.default_dof_pos), dim=1) * self.time_out_buf
+        return r
+        return torch.sum(torch.square(self.root_states[:] - self.base_init_state), dim=1) * self.time_out_buf
         
 
 task_registry.register('a1_collect', LeggedRobotForCollection, A1RoughCfgCollection(), A1RoughCfgPPO())

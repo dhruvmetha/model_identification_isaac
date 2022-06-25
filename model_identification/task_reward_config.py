@@ -26,6 +26,10 @@ class WalkConfig(TaskConfig):
             heading = [-3.14, 3.14]
                 
 class BackFlipConfig(TaskConfig):
+    
+    class env(TaskConfig.env):
+        episode_length_s = 1
+    
     class domain_rand:
         randomize_friction = True
         randomize_base_mass = False
@@ -45,26 +49,28 @@ class BackFlipConfig(TaskConfig):
 
     class rewards:
         class scales:
-            termination = -0.0
-            tracking_lin_vel = 0.0
-            tracking_ang_vel = 0.0
-            lin_vel_z = 0.0
-            ang_vel_xy = 0.0
-            orientation = -0.
-            torques = -0.0
-            dof_vel = -0.
-            dof_acc = -0.
-            base_height = -0.0 
-            feet_air_time =  2.0
+            termination = -2.0
+            
+            tracking_lin_vel = -0.0
+            tracking_ang_vel = -0.0
+            lin_vel_z = -0.0
+            ang_vel_xy = -0.0
+            # orientation = -1.
+            # torques = -0.0
+            # dof_vel = -0.
+            # dof_acc = -0.
+            base_height = -0.0
+            feet_air_time =  0.0
             collision = -2.0
-            feet_stumble = -0.0 
-            action_rate = -0.0
-            stand_still = -0.
+            # feet_stumble = -0.0 
+            action_rate = -0.01
+            # stand_still = -0.
         
         only_positive_rewards = False
         
     class additional_params:
         class rewards:
             class scales:
-                ang_vel_pitch = 1.0
-                lin_vel = -0.0
+                ang_vel_pitch = 2.0
+                pre_termination = -0.0
+                # lin_vel = -0.2

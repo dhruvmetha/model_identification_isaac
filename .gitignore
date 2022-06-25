@@ -14,3 +14,4 @@ observations/
 **/__pycache__/
 *.pyc
 results/
+results*
