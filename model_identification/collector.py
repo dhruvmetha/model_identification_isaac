@@ -82,7 +82,7 @@ class LeggedRobotForCollection(LeggedRobot):
     def _reward_ang_vel_pitch(self):
         # rewarding back flip while punishing sideways rotation
         
-        return (- self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0]) - torch.abs(self.base_ang_vel[:, 2])) * (self.episode_length_buf < (0.6  * self.max_episode_length)) 
+        return (- self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0]) - torch.abs(self.base_ang_vel[:, 2])) * (self.episode_length_buf < (0.6  * self.max_episode_length))
         
         # rewarding front flip while punishing sideways rotation
         return self.base_ang_vel[:, 1] - torch.abs(self.base_ang_vel[:, 0])

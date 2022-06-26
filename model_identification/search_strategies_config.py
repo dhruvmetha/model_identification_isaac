@@ -19,12 +19,12 @@ class exhaustive(BaseConfig):
     name = "exhaustive"
     batch_size = 4096
     ranges = dict(
-        friction = [dict(start=0., end=2., step=11)],
-        mass = [dict(start=-1., end=1., step=11)])
+        friction = [dict(start=0., end=3., step=100)],
+        mass = [dict(start=-2., end=2., step=100)])
     
     class additional_params:
         class env:
-            shapes = [0, 1, 4, 7, 10]  # list(range(13)) -> number of colliding shapes
+            shapes = [0]  # list(range(13)) -> number of colliding shapes
             bodies = [0] # list(range(17)) -> number of rigid bodies with mass    
             
 class adaptive(BaseConfig):

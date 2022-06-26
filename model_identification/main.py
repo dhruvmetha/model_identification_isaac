@@ -48,8 +48,9 @@ def main(args):
     
     run_config, env_train_config, env_search_config, env_collect_config= RunConfig(), TrainConfig(), SearchConfig(), CollectConfig()
     
+    Path(run_config.all_trained_models_folder).mkdir(parents=True, exist_ok=True)
     Path(run_config.results_folder).mkdir(parents=True, exist_ok=True)
-    Path(run_config.root_save_folder).mkdir(parents=True, exist_ok=True)
+    Path(run_config.search_technique).mkdir(parents=True, exist_ok=True)
     
     if run_config.collect_base:
     # collect ground truth data for base policy

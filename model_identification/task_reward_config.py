@@ -11,8 +11,8 @@ class WalkConfig(TaskConfig):
     class domain_rand:
         randomize_friction = True
         randomize_base_mass = True
-        friction_range = [0.5, 1.25]
-        added_mass_range = [-1., 1.]
+        friction_range = [1., 1.]
+        added_mass_range = [0., 0.]
         push_robots = True
     
     class noise:

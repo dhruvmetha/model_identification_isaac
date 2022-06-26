@@ -15,3 +15,5 @@ observations/
 *.pyc
 results/
 results*
+walk/
+models/
