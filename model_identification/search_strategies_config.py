@@ -31,11 +31,11 @@ class adaptive(BaseConfig):
     rollout_size = 100
     name = "adaptive"
     batch_size = 4096
-    num_iterations = 10
+    num_iterations = 15
     
     ranges = dict(
         friction = [dict(start=0., end=2., step=5)],
-        mass = [dict(start=-1., end=1., step=5)] * 2)
+        mass = [dict(start=-1., end=1., step=5)])
     
     interval_zoom = 0.75
     adaptive_step = 5
@@ -43,7 +43,7 @@ class adaptive(BaseConfig):
     class additional_params:
         class env:
             shapes = [0]  # list(range(13)) -> number of colliding shapes
-            bodies = [0, 1] # list(range(17)) -> number of rigid bodies with mass 
+            bodies = [0] # list(range(17)) -> number of rigid bodies with mass 
             
             
 class cross_entropy(BaseConfig):

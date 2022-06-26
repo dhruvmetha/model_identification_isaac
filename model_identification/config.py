@@ -4,10 +4,10 @@ from task_reward_config import *
 
 class RunConfig(BaseConfig):
     train_base: bool = False
-    collect_base: bool = False
-    search_model: bool = False
-    train_best_model: bool = True
-    collect_best_model: bool = True
+    collect_base: bool = True
+    search_model: bool = True 
+    train_best_model: bool = False 
+    collect_best_model: bool = False
     record_error: bool = False
     
     all_trained_models_folder = "models"
@@ -15,7 +15,7 @@ class RunConfig(BaseConfig):
     trained_best_model_path = f"{all_trained_models_folder}/plane_walk_best_model"
     
     results_folder = "walk"
-    search_technique = f"{results_folder}/exhaustive_base"
+    search_technique = f"{results_folder}/adaptive_base"
     ground_truth_path: str = f"{search_technique}/ground_truth/gt.pkl"
     best_model_path: str = f"{search_technique}/best_model/model.pkl"
     iteration_error = f'{search_technique}/errors/iteration.pkl'
@@ -51,7 +51,7 @@ class SearchConfig(BaseConfig):
         added_mass_range = [-0.5, -0.5]
     
     class strategy:
-        name = "exhaustive"
+        name = "adaptive"
         
 
 class CollectConfig(BaseConfig):
