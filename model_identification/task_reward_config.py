@@ -49,7 +49,7 @@ class BackFlipConfig(TaskConfig):
 
     class rewards:
         class scales:
-            termination = -2.0
+            termination = -0.0  # -2.0
             
             tracking_lin_vel = -0.0
             tracking_ang_vel = -0.0

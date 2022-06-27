@@ -93,6 +93,7 @@ class IsaacGymCollector:
         print(total_rew_tracker/total_ep_tracker)
         destroy_simulator(env)
         
+        return total_rew_tracker/total_ep_tracker
         
 # if __name__ == '__main__':
 #     args = get_args()  

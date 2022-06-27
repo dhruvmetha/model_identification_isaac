@@ -47,7 +47,7 @@ def run_for_query_points(args, env_cfg, train_cfg, query_points, base_policy, ro
 def main(args):
     
     run_config, env_train_config, env_search_config, env_collect_config= RunConfig(), TrainConfig(), SearchConfig(), CollectConfig()
-    
+    rew_base_task, rew_test_task = 0., 0.
     Path(run_config.all_trained_models_folder).mkdir(parents=True, exist_ok=True)
     Path(run_config.results_folder).mkdir(parents=True, exist_ok=True)
     Path(run_config.search_technique).mkdir(parents=True, exist_ok=True)
@@ -64,10 +64,11 @@ def main(args):
                 collector.reset_cfg(env_train_config.task_config[env_train_config.base_task])
                 collector.train_model()
             # run collector and save ground truth
+            collector.reset_cfg(env_train_config.task_config[env_train_config.base_task])
             collector.reset_cfg(env_collect_config)
             Path(run_config.ground_truth_path).parent.mkdir(parents=True, exist_ok=True)
             collector.set_collect_path(run_config.ground_truth_path)
-            collector.collect_data()
+            rew_base_task = collector.collect_data()
             # destroy simulator
             
             
@@ -87,6 +88,11 @@ def main(args):
         Search = search_strategies[name](strategy)
         
         env_cfg, train_cfg = task_registry.get_cfgs(name=args.task)
+        overwrite_cfg(env_cfg, env_train_config.task_config[env_train_config.base_task])
+        
+        if getattr(env_train_config.task_config[env_train_config.base_task], "additional_params", None) is not None:
+            add_params_cfg(env_cfg, env_train_config.task_config[env_train_config.base_task].additional_params)
+        
         overwrite_cfg(env_cfg, env_search_config)
         add_params_cfg(env_cfg, strategy.additional_params)
         env_cfg.env.shapes = {v:k for k, v in enumerate(env_cfg.env.shapes)}
@@ -99,8 +105,11 @@ def main(args):
         while True:
             error_tracker = None
             query_points, done = Search.get_query_points(best_qps[0], qps_error)
-            if len(query_points) == 0:
+            if len(query_points) == 0 and not done:
                 raise 'query points is 0 -> something is wrong'
+                break
+            if len(query_points) == 0 and done:
+                print(best_qps)
                 break
             obs = run_for_query_points(args, env_cfg, train_cfg, query_points, run_config.trained_model, strategy.rollout_size)
             if (error_tracker is None) and len(obs) > 0:
@@ -108,8 +117,6 @@ def main(args):
             for i in range(strategy.rollout_size):
                 error_tracker += error_function(obs[i], gt_obs[i])
             qps_error = (query_points, error_tracker)
-            # for k, v in zip(query_points, error_tracker):
-            #     print(k, v)    
             min_error_qp, min_error = query_points[torch.argmin(error_tracker)], torch.min(error_tracker)
             print(min_error)
             if min_error < best_qps[1]:
@@ -117,7 +124,10 @@ def main(args):
                 best_qps = (min_error_qp, min_error)
             iteration_error.append(best_qps[1])
             if done:
+                print(best_qps)
                 break
+            
+            
             
         Path(run_config.iteration_error).parent.mkdir(parents=True, exist_ok=True)
         with open(run_config.iteration_error, 'wb') as f:
@@ -136,7 +146,7 @@ def main(args):
 
     
     
-    if run_config.collect_best_model:    
+    if run_config.collect_best_model:  
         best_model = None
         with open(run_config.best_model_path, 'rb') as f:    
             best_model = pickle.load(f)
@@ -173,8 +183,9 @@ def main(args):
         collector.reset_cfg(new_collect_config())
         Path(run_config.observation_path).parent.mkdir(parents=True, exist_ok=True)
         collector.set_collect_path(run_config.observation_path)
-        collector.collect_data()
+        rew_test_task = collector.collect_data()
     
+    print(rew_base_task, rew_test_task)
     # measure error against the ground truth
     if run_config.record_error:
         best_model_obs = None

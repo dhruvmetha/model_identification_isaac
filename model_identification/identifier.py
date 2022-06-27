@@ -65,7 +65,9 @@ class LeggedRobotForIdentification(LeggedRobot):
         # randomize base mass
         for s in range(len(props)):
             if s in self.cfg.env.bodies.keys():
+                # print(props[s].mass, self.query_points[env_id][self.cfg.env.bodies[s] + self.partition_point])
                 props[s].mass += self.query_points[env_id][self.cfg.env.bodies[s] + self.partition_point]
+                # print(props[s].mass)
         # props[0].mass += self.query_points[env_id][-1]
         return props
 

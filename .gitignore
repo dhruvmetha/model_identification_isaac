@@ -14,6 +14,11 @@ observations/
 **/__pycache__/
 *.pyc
 results/
-results*
+results_flip*
 walk/
 models/
+test*
+walk*
+heavier*
+exp*
+back*

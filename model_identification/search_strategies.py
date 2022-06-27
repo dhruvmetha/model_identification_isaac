@@ -102,8 +102,8 @@ class AdaptiveSearch(SearchStrategy):
         # query_points = []
         candidates_per_prop = []
         # TODO: add clipping at boundary values
-        for prop in best_model:
-            start, end, step = prop - self.interval, prop + self.interval, self.adaptive_step
+        for idx, prop in enumerate(best_model):
+            start, end, step = prop - self.interval, prop + self.interval, self.adaptive_step[idx]
             
             candidates_per_prop.extend([torch.linspace(start, end, step).tolist()])
         
